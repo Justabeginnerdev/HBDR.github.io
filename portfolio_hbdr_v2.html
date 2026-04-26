@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HBDR</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#080808;
+  --surface:#111111;
+  --white:#F2F0EB;
+  --red:#C0392B;
+  --red-dim:rgba(192,57,43,0.15);
+  --muted:#555;
+  --border:rgba(255,255,255,0.07);
+  --font-display:'Bebas Neue',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:var(--font-body);
+  font-weight:300;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.6rem 2.5rem;
+}
+.nav-logo{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:0.25em;
+  color:var(--white);border:1px solid var(--border);padding:0.4rem 0.8rem;
+}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--muted);text-decoration:none;
+  transition:color 0.3s;
+}
+.nav-links a:hover{color:var(--white);}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  justify-content:flex-end;
+  padding:0 2.5rem 4rem;
+  position:relative;overflow:hidden;
+}
+
+/* Título GIGANTE */
+.hero-type{
+  font-family:var(--font-display);
+  font-size:clamp(6rem,22vw,18rem);
+  line-height:0.85;
+  letter-spacing:0.01em;
+  color:var(--white);
+  position:relative;
+  z-index:2;
+  opacity:0;
+  animation:fadeIn 1s ease 0.3s forwards;
+}
+.hero-type .line-red{
+  color:transparent;
+  -webkit-text-stroke:1.5px var(--red);
+}
+
+/* Elementos flotantes decorativos */
+.deco-circle-lg{
+  position:absolute;top:18%;right:12%;
+  width:14px;height:14px;border-radius:50%;
+  border:1.5px solid var(--white);
+  opacity:0;animation:fadeIn 0.8s ease 1.4s forwards;
+}
+.deco-circle-sm{
+  position:absolute;top:24%;right:12.8%;
+  width:5px;height:5px;border-radius:50%;
+  background:var(--white);
+  opacity:0;animation:fadeIn 0.8s ease 1.6s forwards;
+}
+.deco-dot-red{
+  position:absolute;left:6%;top:55%;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 30px rgba(192,57,43,0.6);
+  opacity:0;animation:fadeIn 0.8s ease 1.8s forwards;
+}
+.deco-circle-red{
+  position:absolute;left:5.5%;top:54%;
+  width:32px;height:32px;border-radius:50%;
+  border:1.5px solid rgba(192,57,43,0.4);
+  opacity:0;animation:fadeIn 0.8s ease 2s forwards;
+}
+.deco-rect{
+  position:absolute;right:8%;top:32%;
+  border:1px solid var(--red);
+  padding:0.4rem 0.6rem;
+  font-family:var(--font-mono);font-size:8px;
+  letter-spacing:0.15em;line-height:1.6;
+  color:var(--red);
+  opacity:0;animation:fadeIn 0.8s ease 1.2s forwards;
+}
+.deco-line-v{
+  position:absolute;left:50%;top:0;bottom:0;
+  width:1px;background:var(--border);
+  opacity:0;animation:fadeIn 1s ease 0.5s forwards;
+}
+.deco-circles-right{
+  position:absolute;right:2%;top:45%;
+  display:flex;flex-direction:column;gap:1rem;
+  opacity:0;animation:fadeIn 0.8s ease 2.2s forwards;
+}
+.deco-circles-right span{
+  width:6px;height:6px;border-radius:50%;
+  border:1px solid var(--muted);display:block;
+}
+.deco-circles-right span.filled{background:var(--red);border-color:var(--red);}
+
+/* Sub info hero */
+.hero-meta{
+  position:absolute;left:50%;bottom:6rem;
+  transform:translateX(-50%);
+  font-family:var(--font-mono);font-size:9px;
+  letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--muted);text-align:center;line-height:2;
+  opacity:0;animation:fadeIn 0.8s ease 2s forwards;
+}
+
+.scroll-indicator{
+  position:absolute;left:50%;bottom:2.5rem;
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+  opacity:0;animation:fadeIn 0.8s ease 2.4s forwards;
+}
+.scroll-icon{
+  width:20px;height:32px;border:1px solid var(--muted);
+  border-radius:10px;position:relative;
+}
+.scroll-icon::after{
+  content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);
+  width:3px;height:6px;background:var(--white);border-radius:2px;
+  animation:scrollBob 2s ease-in-out infinite;
+}
+.scroll-label{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.3em;
+  color:var(--muted);text-transform:uppercase;
+}
+
+/* Social bottom-right */
+.hero-social{
+  position:absolute;right:2.5rem;bottom:2.5rem;
+  display:flex;gap:1.5rem;
+  opacity:0;animation:fadeIn 0.8s ease 2.2s forwards;
+}
+.hero-social a{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:0.15em;
+  text-transform:uppercase;color:var(--muted);text-decoration:none;
+  transition:color 0.3s;
+}
+.hero-social a:hover{color:var(--white);}
+
+/* ── SECCIONES ── */
+.section{
+  padding:7rem 2.5rem;
+  max-width:1000px;margin:0 auto;
+  opacity:0;transform:translateY(30px);
+  transition:opacity 0.9s ease,transform 0.9s ease;
+}
+.section.visible{opacity:1;transform:translateY(0);}
+
+.section-label{
+  font-family:var(--font-mono);font-size:9px;
+  letter-spacing:0.35em;color:var(--red);
+  text-transform:uppercase;margin-bottom:1rem;
+  display:flex;align-items:center;gap:0.75rem;
+}
+.section-label::before{content:'';width:20px;height:1px;background:var(--red);}
+
+.section-title{
+  font-family:var(--font-display);
+  font-size:clamp(3rem,7vw,5.5rem);
+  line-height:0.9;letter-spacing:0.02em;
+  color:var(--white);margin-bottom:3.5rem;
+}
+
+/* SOBRE MÍ */
+.about-cols{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.about-text{font-size:0.9rem;line-height:1.95;color:var(--muted);}
+.about-text p+p{margin-top:1rem;}
+.about-text strong{color:var(--white);font-weight:400;}
+
+.skills{display:flex;flex-direction:column;gap:1.2rem;}
+.skill-row{display:flex;flex-direction:column;gap:0.4rem;}
+.skill-top{
+  display:flex;justify-content:space-between;
+  font-family:var(--font-mono);font-size:10px;
+  letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;
+}
+.bar-bg{height:1px;background:rgba(255,255,255,0.08);}
+.bar-fill{
+  height:100%;background:var(--red);
+  transform:scaleX(0);transform-origin:left;
+  animation:barGrow 1.2s ease forwards;
+}
+
+/* CERTS */
+.certs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);}
+.cert-card{
+  background:var(--bg);padding:2rem 1.5rem;
+  position:relative;overflow:hidden;
+  transition:background 0.3s;cursor:default;
+}
+.cert-card:hover{background:#131313;}
+.cert-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:2px;background:var(--red);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.4s ease;
+}
+.cert-card:hover::after{transform:scaleX(1);}
+.cert-num{
+  font-family:var(--font-mono);font-size:9px;
+  letter-spacing:0.25em;color:var(--red);
+  margin-bottom:1.5rem;text-transform:uppercase;
+}
+.cert-name{
+  font-family:var(--font-display);font-size:1.3rem;
+  line-height:1.1;color:var(--white);margin-bottom:0.4rem;
+}
+.cert-org{font-size:0.78rem;color:var(--muted);}
+
+/* PROYECTOS */
+.projects{display:flex;flex-direction:column;}
+.project-item{
+  border-top:1px solid var(--border);
+  padding:2rem 0;
+  display:grid;grid-template-columns:1fr auto;
+  gap:2rem;align-items:center;
+  transition:padding-left 0.3s;cursor:default;
+}
+.project-item:hover{padding-left:1rem;}
+.project-item:last-child{border-bottom:1px solid var(--border);}
+.project-name{
+  font-family:var(--font-display);
+  font-size:clamp(1.4rem,3vw,2rem);
+  color:var(--white);margin-bottom:0.5rem;
+  transition:color 0.3s;
+}
+.project-item:hover .project-name{color:var(--red);}
+.project-desc{font-size:0.83rem;color:var(--muted);line-height:1.7;max-width:500px;}
+.project-tags{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.75rem;}
+.ptag{
+  font-family:var(--font-mono);font-size:8px;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--muted);border:1px solid rgba(255,255,255,0.1);
+  padding:0.2rem 0.5rem;
+}
+.project-arrow{
+  font-size:1.5rem;color:var(--border);
+  transition:color 0.3s,transform 0.3s;
+}
+.project-item:hover .project-arrow{color:var(--red);transform:translateX(6px);}
+
+/* CONTACTO */
+.contact-wrap{border:1px solid var(--border);padding:4rem;text-align:center;position:relative;}
+.contact-wrap::before,.contact-wrap::after{
+  content:'';position:absolute;
+  width:12px;height:12px;border-color:var(--red);border-style:solid;
+}
+.contact-wrap::before{top:-1px;left:-1px;border-width:2px 0 0 2px;}
+.contact-wrap::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0;}
+
+.contact-big{
+  font-family:var(--font-display);
+  font-size:clamp(2.5rem,6vw,5rem);
+  color:var(--white);line-height:1;margin-bottom:1.5rem;
+}
+.contact-sub{font-size:0.85rem;color:var(--muted);line-height:1.8;margin-bottom:2.5rem;}
+.contact-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.clink{
+  font-family:var(--font-mono);font-size:10px;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--white);border:1px solid var(--border);
+  padding:0.75rem 2rem;text-decoration:none;
+  transition:all 0.3s;
+}
+.clink:hover{background:var(--white);color:var(--bg);}
+
+/* FOOTER */
+footer{
+  padding:2.5rem;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer-name{font-family:var(--font-mono);font-size:9px;letter-spacing:0.25em;color:var(--muted);}
+
+/* ANIMACIONES */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes barGrow{to{transform:scaleX(1)}}
+@keyframes scrollBob{
+  0%,100%{transform:translateX(-50%) translateY(0);}
+  50%{transform:translateX(-50%) translateY(5px);}
+}
+
+@media(max-width:640px){
+  .about-cols{grid-template-columns:1fr;}
+  .hero-meta{display:none;}
+  nav{padding:1.2rem 1.5rem;}
+  .hero{padding:0 1.5rem 4rem;}
+  .section{padding:5rem 1.5rem;}
+  .contact-wrap{padding:2.5rem 1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">HBDR</div>
+  <ul class="nav-links">
+    <li><a href="#sobre-mi">Sobre mí</a></li>
+    <li><a href="#certs">Certs</a></li>
+    <li><a href="#proyectos">Proyectos</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="deco-line-v"></div>
+  <div class="deco-circle-lg"></div>
+  <div class="deco-circle-sm"></div>
+  <div class="deco-dot-red"></div>
+  <div class="deco-circle-red"></div>
+  <div class="deco-rect">20<br>25<br>CURRICULUM<br>VITAE</div>
+  <div class="deco-circles-right">
+    <span></span><span class="filled"></span><span></span>
+  </div>
+
+  <div class="hero-type">
+    <div>PORT</div>
+    <div class="line-red">FOLIO</div>
+  </div>
+
+  <div class="hero-meta">
+    Redes · Desarrollo Web · Seguridad · SQL
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-icon"></div>
+    <span class="scroll-label">Scroll abajo</span>
+  </div>
+
+  <div class="hero-social">
+    <a href="https://github.com/" target="_blank">GitHub</a>
+    <a href="https://linkedin.com/" target="_blank">LinkedIn</a>
+    <a href="mailto:tu@email.com">Email</a>
+  </div>
+</section>
+
+<!-- SOBRE MÍ -->
+<section class="section" id="sobre-mi">
+  <div class="section-label">Prólogo</div>
+  <h2 class="section-title">Sobre<br>mí</h2>
+  <div class="about-cols">
+    <div class="about-text">
+      <p>Soy un profesional <strong>generalista</strong> con formación en desarrollo web, bases de datos y redes. Me muevo cómodo entre el frontend y la infraestructura.</p>
+      <p>Me gusta entender cómo funcionan las cosas desde adentro. Construyo mis propias herramientas, automatizo lo que se puede automatizar, y aprendo haciendo.</p>
+      <p>Cuando no estoy frente a una terminal, probablemente estoy sacando otra certificación, trabajando, viendo anime o pensando en el siguiente proyecto.</p>
+    </div>
+    <div class="skills">
+      <div class="skill-row">
+        <div class="skill-top"><span>Python & Automatización</span><span>80%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:80%;animation-delay:0.1s;"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><span>Redes — Cisco</span><span>78%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:78%;animation-delay:0.25s;"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><span>SQL & Bases de datos</span><span>75%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:75%;animation-delay:0.4s;"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><span>HTML / CSS / JS</span><span>65%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:65%;animation-delay:0.55s;"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><span>Seguridad / Blue Team</span><span>60%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:60%;animation-delay:0.7s;"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTS -->
+<section class="section" id="certs">
+  <div class="section-label">Logros</div>
+  <h2 class="section-title">Certifi<br>caciones</h2>
+  <div class="certs-grid">
+    <div class="cert-card">
+      <div class="cert-num">01 — Redes</div>
+      <div class="cert-name">Cisco CCNA</div>
+      <div class="cert-org">Cisco Systems</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-num">02 — Web</div>
+      <div class="cert-name">Desarrollo Web</div>
+      <div class="cert-org">Certificación oficial</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-num">03 — Data</div>
+      <div class="cert-name">SQL & Bases de Datos</div>
+      <div class="cert-org">Certificación oficial</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-num">04 — ???</div>
+      <div class="cert-name">Certificación</div>
+      <div class="cert-org">Pendiente de detalle</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROYECTOS -->
+<section class="section" id="proyectos">
+  <div class="section-label">Episodios</div>
+  <h2 class="section-title">Proyec<br>tos</h2>
+  <div class="projects">
+    <div class="project-item">
+      <div>
+        <div class="project-name">Anime Library</div>
+        <div class="project-desc">Web app local para gestionar y reproducir una colección de anime. Flask, SQLite, scraping de metadatos y sistema de progreso por episodio.</div>
+        <div class="project-tags">
+          <span class="ptag">Flask</span><span class="ptag">SQLite</span><span class="ptag">JS</span><span class="ptag">Jikan API</span>
+        </div>
+      </div>
+      <div class="project-arrow">→</div>
+    </div>
+    <div class="project-item">
+      <div>
+        <div class="project-name">Auto-Downloader</div>
+        <div class="project-desc">Script Python que automatiza descargas desde tioanime.com vía Playwright y MEGAcmd, con fallback a Mediafire. Ejecutado al inicio con Task Scheduler.</div>
+        <div class="project-tags">
+          <span class="ptag">Python</span><span class="ptag">Playwright</span><span class="ptag">MEGAcmd</span>
+        </div>
+      </div>
+      <div class="project-arrow">→</div>
+    </div>
+    <div class="project-item">
+      <div>
+        <div class="project-name">Próximo proyecto</div>
+        <div class="project-desc">Espacio para tu siguiente trabajo destacado en redes, seguridad o desarrollo.</div>
+        <div class="project-tags"><span class="ptag">Próximamente</span></div>
+      </div>
+      <div class="project-arrow">→</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="section" id="contacto">
+  <div class="section-label">Fin del capítulo</div>
+  <div class="contact-wrap">
+    <div class="contact-big">¿Trabajamos<br>juntos?</div>
+    <p class="contact-sub">Abierto a oportunidades en redes,<br>desarrollo web o proyectos multidisciplinarios.</p>
+    <div class="contact-links">
+      <a class="clink" href="mailto:tu@email.com">Email</a>
+      <a class="clink" href="https://github.com/" target="_blank">GitHub</a>
+      <a class="clink" href="https://linkedin.com/" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-name">HBDR — 2025</span>
+  <span class="footer-name">Portafolio personal</span>
+</footer>
+
+<script>
+const sections = document.querySelectorAll('.section');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold: 0.1});
+sections.forEach(s => io.observe(s));
+</script>
+</body>
+</html>
